@@ -1,0 +1,2254 @@
+<!doctype html>
+<html lang="en" data-theme="ivory">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2ede2">
+<title>Haiku Sketchbook — sketches &amp; verses · Dr. Akshat Shukla</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect x='5' y='5' width='30' height='30' rx='3' fill='%23ac493b'/%3E%3Cpath d='M13 12v16m-4-8h12m4-8v16m-3-12h8m-8 8h8' stroke='%23f8f3e7' stroke-width='2'/%3E%3C/svg%3E">
+<style>
+/* All artwork and the handwriting font are embedded by build.py. */
+@font-face {
+  font-family: Notebook;
+  src: url('__FONT__') format('truetype');
+  font-display: swap;
+}
+
+:root {
+  --bg: #f1ece1;
+  --bg-accent: #e6dfd0;
+  --ink: #353a32;
+  --ink-soft: #5a5f54;
+  --muted: #827e70;
+  --paper: #f9f4e8;
+  --paper-warm: #f4ecdc;
+  --paper-edge: #e2d9c5;
+  --linen: #9e9f89;
+  --linen-dark: #7d7e6a;
+  --red: #ab4434;
+  --red-glow: rgba(171, 68, 52, 0.16);
+  --gold: #b88a44;
+  --watermark: rgba(168, 162, 146, 0.28);
+  --ui-surface: rgba(249, 244, 232, 0.82);
+  --ui-border: rgba(145, 138, 118, 0.28);
+  --shadow-book: rgba(58, 49, 34, 0.22);
+}
+
+html[data-theme="sunlit"] {
+  --bg: #ede2ce;
+  --bg-accent: #dfd0b5;
+  --paper: #fbf5e6;
+  --paper-warm: #f6ebd4;
+  --watermark: rgba(162, 142, 108, 0.30);
+  --ui-surface: rgba(251, 244, 228, 0.86);
+  --shadow-book: rgba(72, 54, 26, 0.26);
+}
+
+html[data-theme="dusk"] {
+  --bg: #1d2024;
+  --bg-accent: #14171a;
+  --ink: #323730;
+  --ink-soft: #54594f;
+  --muted: #9ea094;
+  --paper: #f6efe0;
+  --paper-warm: #efe5d2;
+  --paper-edge: #cfc5b0;
+  --linen: #6f7260;
+  --linen-dark: #4f5244;
+  --watermark: rgba(235, 226, 205, 0.07);
+  --ui-surface: rgba(38, 42, 46, 0.86);
+  --ui-border: rgba(210, 202, 184, 0.18);
+  --shadow-book: rgba(0, 0, 0, 0.62);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 38%, var(--bg) 0%, var(--bg-accent) 100%);
+  color: var(--ink);
+  font-family: Georgia, 'Times New Roman', serif;
+  transition: background 0.6s ease, color 0.4s ease;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+
+button:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+/* Subtle paper noise texture over the viewport */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.22;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' opacity='.18' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Sunlit dappled leaf shadow overlay */
+.sunlight-dapple {
+  position: fixed;
+  inset: -10%;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  background:
+    radial-gradient(ellipse 180px 90px at 22% 28%, rgba(255, 224, 150, 0.22), transparent 70%),
+    radial-gradient(ellipse 260px 140px at 74% 32%, rgba(85, 68, 36, 0.08), transparent 68%),
+    radial-gradient(ellipse 210px 110px at 64% 68%, rgba(255, 218, 138, 0.18), transparent 72%),
+    radial-gradient(ellipse 160px 95px at 32% 72%, rgba(85, 68, 36, 0.07), transparent 65%);
+  animation: swayDapple 11s ease-in-out infinite alternate;
+}
+
+html[data-theme="sunlit"] .sunlight-dapple {
+  opacity: 1;
+}
+
+html[data-theme="dusk"] .sunlight-dapple {
+  opacity: 1;
+  background: radial-gradient(circle 540px at 50% 48%, rgba(255, 214, 145, 0.13), rgba(10, 12, 16, 0.55) 78%);
+  animation: none;
+}
+
+@keyframes swayDapple {
+  0% { transform: translate3d(-1.5%, -1%, 0) rotate(-0.8deg) scale(1); }
+  100% { transform: translate3d(1.5%, 1.2%, 0) rotate(0.8deg) scale(1.03); }
+}
+
+/* Ambient floating dust motes / petals canvas */
+#ambient-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* App Shell */
+.app-shell {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100dvh;
+  width: 100%;
+}
+
+/* Top Masthead & Studio Toolbar */
+.masthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 4vw 8px;
+  font: 10px/1.4 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  gap: 16px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+html[data-theme="dusk"] .brand {
+  color: #e8e2d4;
+}
+
+.brand-mark {
+  color: var(--red);
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.brand-sub {
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tool-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+  backdrop-filter: blur(8px);
+  font: 10px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: all 0.2s ease;
+}
+
+html[data-theme="dusk"] .tool-pill {
+  color: #dcd6c8;
+}
+
+.tool-pill:hover {
+  border-color: var(--red);
+  color: var(--red);
+  transform: translateY(-1px);
+}
+
+.tool-pill[aria-pressed="true"], .tool-pill.active {
+  background: var(--red);
+  border-color: var(--red);
+  color: #faf5eb;
+}
+
+.tool-pill svg {
+  width: 13px;
+  height: 13px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+}
+
+/* Main Stage & Scene */
+.scene {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 8px 28px 4px;
+  isolation: isolate;
+  min-height: 0;
+}
+
+.back-title {
+  position: absolute;
+  top: 4%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: clamp(58px, 9.2vw, 138px);
+  font-weight: 400;
+  letter-spacing: -5px;
+  line-height: 1;
+  margin: 0;
+  color: var(--watermark);
+  filter: blur(2px);
+  z-index: -1;
+  user-select: none;
+  pointer-events: none;
+  transition: transform 0.35s ease-out, color 0.5s ease;
+}
+
+/* Book Container & 3D Perspective */
+.book-wrap {
+  width: min(920px, 82vw, calc((100dvh - 175px) * 1.48));
+  perspective: 2600px;
+  position: relative;
+  container-type: inline-size;
+  transition: transform 0.22s ease-out;
+}
+
+/* Realistic ambient table shadow beneath the book */
+.book-wrap::after {
+  content: "";
+  position: absolute;
+  bottom: -26px;
+  left: 5%;
+  width: 90%;
+  height: 44px;
+  background: var(--shadow-book);
+  filter: blur(22px);
+  border-radius: 50%;
+  z-index: -1;
+  transition: all 0.75s ease;
+}
+
+.book-wrap.closed-shadow::after {
+  left: 27%;
+  width: 46%;
+}
+
+.book {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.5;
+  transform-style: preserve-3d;
+  transition: translate 0.78s cubic-bezier(0.24, 0.68, 0.18, 1), transform 0.25s ease-out;
+  translate: 0 0;
+}
+
+.book.closed {
+  translate: -25% 0;
+}
+
+.book.closed-end {
+  translate: 25% 0;
+}
+
+/* Hardcover Linen Foundation & Stacked Paper Edges */
+.foundation {
+  position: absolute;
+  inset: -4px -6px -5px -6px;
+  background: linear-gradient(135deg, var(--linen) 0%, var(--linen-dark) 100%);
+  border-radius: 5px 10px 10px 5px;
+  box-shadow:
+    0 2px 0 #dcd5c3,
+    0 5px 0 #ebe4d4,
+    0 8px 0 #c9c0ac,
+    0 16px 32px var(--shadow-book);
+  transform: translateZ(-4px);
+  transition: left 0.65s ease, right 0.65s ease, border-radius 0.65s ease, opacity 0.4s ease;
+}
+
+.closed .foundation {
+  left: 50%;
+  border-radius: 2px 10px 10px 2px;
+}
+
+.closed-end .foundation {
+  left: -6px;
+  right: 50%;
+  border-radius: 10px 2px 2px 10px;
+}
+
+/* Center Stitched Spine Seam & Ribbon Bookmark */
+.spine-hinge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 10px);
+  width: 20px;
+  z-index: 150;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.45s ease;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(72, 62, 42, 0.08) 32%,
+    rgba(52, 44, 28, 0.22) 50%,
+    rgba(72, 62, 42, 0.08) 68%,
+    transparent 100%);
+}
+
+/* Visible linen binding stitches along the spine */
+.spine-hinge::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 10%;
+  bottom: 10%;
+  width: 1.5px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(224, 214, 192, 0.52) 0px,
+    rgba(224, 214, 192, 0.52) 8px,
+    transparent 8px,
+    transparent 44px
+  );
+}
+
+.book.closed .spine-hinge,
+.book.closed-end .spine-hinge {
+  opacity: 0;
+}
+
+/* Silk Ribbon Bookmark at Top of Spine */
+.ribbon-bookmark {
+  position: absolute;
+  top: -8px;
+  left: calc(50% - 7px);
+  width: 14px;
+  height: 54px;
+  background: linear-gradient(180deg, #8e3224 0%, #b84837 65%, #9b3829 100%);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+  z-index: 220;
+  border: 0;
+  padding: 0;
+  box-shadow: 0 4px 10px rgba(45, 20, 14, 0.28);
+  transform-origin: top center;
+  transition: height 0.35s cubic-bezier(0.3, 1.3, 0.3, 1), transform 0.3s ease, opacity 0.4s ease;
+}
+
+.ribbon-bookmark:hover {
+  height: 68px;
+  transform: rotate(-3deg);
+}
+
+.ribbon-bookmark.is-bookmarked {
+  height: 82px;
+  background: linear-gradient(180deg, #9b3526 0%, #cf4f3c 60%, #b88a44 100%);
+}
+
+.book.closed .ribbon-bookmark,
+.book.closed-end .ribbon-bookmark {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Physical Double-Sided Sheet */
+.sheet {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 860ms cubic-bezier(0.24, 0.68, 0.18, 1);
+  will-change: transform;
+}
+
+.sheet.turned {
+  transform: rotateY(-180deg);
+}
+
+/* Edge hover curl preview */
+.book:not(.riffle) .sheet.peek-next {
+  transform: rotateY(-9deg);
+}
+
+.book:not(.riffle) .sheet.turned.peek-prev {
+  transform: rotateY(-171deg);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  background: var(--paper);
+  overflow: hidden;
+  border-radius: 1px 6px 6px 2px;
+  box-shadow:
+    inset -1px 0 3px rgba(109, 97, 65, 0.18),
+    1px 2px 5px rgba(72, 64, 42, 0.16);
+  /* Subtle deckled cotton paper silhouette */
+  clip-path: polygon(
+    .12% .18%, 18% 0, 36% .15%, 52% 0, 73% .14%, 99.85% 0,
+    100% 16%, 99.86% 32%, 100% 55%, 99.82% 76%, 100% 99.78%,
+    81% 100%, 63% 99.82%, 42% 100%, 20% 99.85%, 0 100%,
+    .14% 78%, 0 59%, .11% 37%, 0 18%
+  );
+}
+
+/* Inner spine curve shading & warm edge vignette */
+.face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg,
+    rgba(88, 76, 48, 0.16) 0%,
+    rgba(88, 76, 48, 0.04) 6%,
+    transparent 15%,
+    transparent 94%,
+    rgba(137, 124, 70, 0.08) 100%);
+  box-shadow: inset 0 0 32px rgba(185, 160, 102, 0.10);
+}
+
+.back {
+  transform: rotateY(180deg);
+  border-radius: 6px 1px 2px 6px;
+}
+
+.back::after {
+  background: linear-gradient(270deg,
+    rgba(88, 76, 48, 0.18) 0%,
+    rgba(88, 76, 48, 0.05) 7%,
+    transparent 16%,
+    transparent 94%,
+    rgba(137, 124, 70, 0.08) 100%);
+}
+
+.cover {
+  clip-path: none;
+  border: 1px solid rgba(168, 162, 138, 0.45);
+}
+
+.paper-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.26;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.62' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+}
+
+/* Left Page Artwork & Archival Plate Framing */
+.art-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--paper);
+}
+
+.art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  mix-blend-mode: multiply;
+  transition: transform 0.5s ease;
+}
+
+.cover .art {
+  mix-blend-mode: normal;
+}
+
+/* Archival footer strip on left page that stays clear of artwork */
+.plate-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 8% 4.2%;
+  background: linear-gradient(180deg, transparent 0%, rgba(249, 244, 232, 0.86) 55%, rgba(249, 244, 232, 0.96) 100%);
+  pointer-events: none;
+}
+
+.plate-caption {
+  font: 8.5px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 2.2px;
+  text-transform: uppercase;
+  color: #847d6c;
+}
+
+.folio {
+  font: 10px/1 Georgia, serif;
+  letter-spacing: 1px;
+  color: #9b927d;
+}
+
+.folio-right {
+  position: absolute;
+  bottom: 4.2%;
+  right: 8%;
+}
+
+/* Interactive Loupe Magnifier Lens on Left Page */
+.loupe-lens {
+  position: absolute;
+  width: 155px;
+  height: 155px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(250, 244, 230, 0.95);
+  box-shadow:
+    0 10px 28px rgba(38, 32, 20, 0.35),
+    inset 0 0 14px rgba(255, 255, 255, 0.45);
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.85);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 60;
+  background-repeat: no-repeat;
+  background-color: var(--paper);
+}
+
+.loupe-active .loupe-lens.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Right Page: Verse & Calligraphy Layout */
+.verse {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 9% 12% 10% 13%;
+  position: relative;
+  z-index: 2;
+  /* Subtle blind-debossed journal guide lines */
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 37px,
+    rgba(165, 154, 130, 0.08) 38px
+  );
+}
+
+/* Decorative corner watermark flourish on right page */
+.verse::before {
+  content: "";
+  position: absolute;
+  top: 6%;
+  right: 8%;
+  width: 44px;
+  height: 44px;
+  border-top: 1px solid rgba(168, 158, 136, 0.28);
+  border-right: 1px solid rgba(168, 158, 136, 0.28);
+  pointer-events: none;
+}
+
+.verse-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.verse .eyebrow {
+  font: 8.5px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 2.6px;
+  text-transform: uppercase;
+  color: #968e7c;
+}
+
+.kigo-badge {
+  font: 8px/1 system-ui, -apple-system, sans-serif;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #8c7b62;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(162, 148, 122, 0.32);
+  background: rgba(242, 234, 216, 0.55);
+}
+
+.poem {
+  font: clamp(19px, 3.4cqi, 33px)/1.62 Notebook, 'Segoe Print', 'Bradley Hand', cursive;
+  white-space: pre-line;
+  transform: rotate(-1.2deg);
+  margin: 0;
+  color: #3a3d33;
+}
+
+.poem span {
+  display: block;
+  transition: transform 0.3s ease, color 0.3s ease;
+  padding: 1px 0;
+}
+
+.poem span:nth-child(2) {
+  translate: 4px 0;
+}
+
+.poem span:nth-child(3) {
+  translate: 1px 0;
+}
+
+/* Subtle interactive ink highlight when hovering verse lines */
+.poem span:hover {
+  color: #1f221b;
+  transform: translateX(4px);
+}
+
+/* Seal & Interactive Hanko Row */
+.seal-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 22px;
+  position: relative;
+  z-index: 260;
+}
+
+.seal-btn {
+  position: relative;
+  background: transparent;
+  border: 0;
+  padding: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ab4533;
+  transform: rotate(-6deg);
+  transition: transform 0.25s cubic-bezier(0.25, 1.5, 0.4, 1), filter 0.25s ease;
+}
+
+.seal-btn:hover {
+  transform: rotate(-3deg) scale(1.1);
+}
+
+.seal-btn:active, .seal-btn.stamping {
+  transform: rotate(-6deg) scale(0.86);
+}
+
+.seal-btn.stamped {
+  color: #b83726;
+  filter: drop-shadow(0 2px 6px rgba(178, 56, 38, 0.28));
+}
+
+.seal-btn.stamped .seal-fill {
+  fill: rgba(178, 56, 38, 0.14);
+}
+
+.seal {
+  width: 34px;
+  height: 37px;
+  display: block;
+}
+
+.seal-hint {
+  font: 9px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #a69d8a;
+  opacity: 0.78;
+  transition: color 0.25s ease, opacity 0.25s ease;
+}
+
+.seal-btn.stamped + .seal-hint {
+  color: var(--red);
+  opacity: 0.95;
+}
+
+.verse .annotation {
+  font: clamp(14px, 2.2cqi, 17px)/1.35 Notebook, 'Segoe Print', cursive;
+  color: #8f8773;
+  margin-top: 12px;
+  transform: rotate(-1.6deg);
+}
+
+/* Interactive Field Notes Drawer inside Right Page */
+.field-note-toggle {
+  position: relative;
+  z-index: 260;
+  align-self: flex-start;
+  margin-top: 14px;
+  padding: 4px 10px;
+  border: 1px dashed rgba(154, 146, 126, 0.45);
+  border-radius: 4px;
+  background: rgba(244, 236, 220, 0.5);
+  font: 8.5px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #7d7665;
+  transition: all 0.2s ease;
+}
+
+.field-note-toggle:hover {
+  border-color: var(--red);
+  color: var(--red);
+  background: rgba(249, 244, 232, 0.9);
+}
+
+.field-note-card {
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 9%;
+  z-index: 270;
+  background: rgba(251, 247, 237, 0.96);
+  border: 1px solid rgba(168, 156, 132, 0.42);
+  border-radius: 6px;
+  padding: 12px 14px;
+  box-shadow: 0 10px 26px rgba(52, 44, 28, 0.14);
+  font: 11px/1.5 Georgia, serif;
+  color: #4a4d42;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.field-note-card.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.field-note-card strong {
+  display: block;
+  font: 8.5px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 4px;
+}
+
+.field-note-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  color: #8c8472;
+  padding: 2px 5px;
+}
+
+/* Invisible Page-Turn Hit Zones */
+.hit {
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  z-index: 200;
+}
+
+.hit.prev { left: 0; }
+.hit.next { right: 0; }
+
+.hit:hover {
+  background: linear-gradient(90deg, transparent, rgba(140, 121, 88, 0.025));
+}
+
+.closed .hit.prev { visibility: hidden; }
+.closed-end .hit.next { visibility: hidden; }
+
+.book.riffle .sheet {
+  transition-duration: 240ms;
+}
+
+/* Back Cover Typography */
+.back-cover-copy {
+  position: absolute;
+  top: 26%;
+  left: 10%;
+  width: 80%;
+  text-align: center;
+  color: #3f453c;
+}
+
+.back-cover-name {
+  font: clamp(22px, 3.5cqi, 36px)/1.25 Notebook, 'Segoe Print', cursive;
+  margin: 0 0 18px;
+  transform: rotate(-1deg);
+}
+
+.back-cover-bio {
+  font: clamp(16px, 2.5cqi, 25px)/1.55 Notebook, 'Segoe Print', cursive;
+  margin: 0;
+}
+
+.back-cover-copy .seal {
+  margin: 22px auto 0;
+  display: block;
+  color: #ab4533;
+  opacity: 0.85;
+}
+
+/* Bottom Reader Controls & Footer Bar */
+.bottom-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 4vw 14px;
+  gap: 8px;
+  position: relative;
+  z-index: 250;
+}
+
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.arrow {
+  border: 1px solid var(--ui-border);
+  background: var(--ui-surface);
+  backdrop-filter: blur(6px);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font: 16px/1 Georgia, serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+html[data-theme="dusk"] .arrow {
+  color: #e6e0d2;
+}
+
+.arrow:hover:enabled {
+  background: var(--red);
+  border-color: var(--red);
+  color: #faf5eb;
+  transform: scale(1.06);
+}
+
+.counter-btn {
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 999px;
+  padding: 5px 14px;
+  font: 10px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 2.2px;
+  min-width: 118px;
+  text-align: center;
+  color: var(--ink-soft);
+  transition: all 0.2s ease;
+}
+
+html[data-theme="dusk"] .counter-btn {
+  color: #ccc6b8;
+}
+
+.counter-btn:hover {
+  border-color: var(--ui-border);
+  background: var(--ui-surface);
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 11px;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #cbc9ba;
+  position: relative;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+html[data-theme="dusk"] .dot {
+  background: #555850;
+}
+
+.dot::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+}
+
+.dot[aria-current="true"] {
+  background: var(--red);
+  transform: scale(1.3);
+}
+
+.dot.bookmarked::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.footer-meta {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font: 9.5px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 1.4px;
+  color: var(--muted);
+  text-transform: uppercase;
+  padding-top: 2px;
+}
+
+.hint {
+  margin: 0;
+  text-align: center;
+  font: 10.5px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.4px;
+  color: var(--muted);
+  text-transform: none;
+}
+
+/* Spread Index Drawer (Table of Contents) */
+.index-drawer {
+  position: fixed;
+  left: 50%;
+  bottom: 76px;
+  transform: translate(-50%, 16px);
+  width: min(860px, 92vw);
+  background: rgba(250, 245, 233, 0.96);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(162, 152, 130, 0.38);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 20px 48px rgba(36, 30, 18, 0.24);
+  z-index: 400;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+html[data-theme="dusk"] .index-drawer {
+  background: rgba(34, 37, 42, 0.96);
+  border-color: rgba(210, 202, 184, 0.2);
+  color: #e8e2d4;
+}
+
+.index-drawer.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.index-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font: 10px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.index-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  gap: 10px;
+}
+
+.index-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(158, 148, 126, 0.28);
+  background: rgba(244, 237, 222, 0.6);
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+html[data-theme="dusk"] .index-card {
+  background: rgba(48, 52, 58, 0.7);
+}
+
+.index-card:hover, .index-card[aria-current="true"] {
+  border-color: var(--red);
+  transform: translateY(-2px);
+}
+
+.index-thumb {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #e8e0ce;
+}
+
+.index-card-title {
+  font: 13px/1.2 Notebook, cursive;
+  color: var(--ink);
+}
+
+html[data-theme="dusk"] .index-card-title {
+  color: #f0eadc;
+}
+
+.index-card-sub {
+  font: 8px/1.1 system-ui, -apple-system, sans-serif;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Modal Backdrop (Compose Studio & Artwork Lightbox) */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(28, 25, 20, 0.58);
+  backdrop-filter: blur(6px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 500;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.modal-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-card {
+  width: min(560px, 94vw);
+  max-height: 90dvh;
+  overflow-y: auto;
+  background: var(--paper);
+  color: #353a32;
+  border: 1px solid rgba(160, 150, 128, 0.45);
+  border-radius: 12px;
+  padding: 24px 26px;
+  box-shadow: 0 24px 60px rgba(20, 16, 10, 0.35);
+  position: relative;
+}
+
+.modal-eyebrow {
+  font: 9px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 6px;
+}
+
+.modal-title {
+  font: 28px/1.2 Notebook, 'Segoe Print', cursive;
+  margin: 0 0 14px;
+  color: #353a32;
+}
+
+.form-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.field-label {
+  display: flex;
+  justify-content: space-between;
+  font: 9.5px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: #746e5f;
+  margin-bottom: 5px;
+}
+
+.field-input {
+  width: 100%;
+  padding: 8px 11px;
+  border-radius: 6px;
+  border: 1px solid rgba(154, 144, 122, 0.45);
+  background: #fdfaf2;
+  color: #353a32;
+  font: 14px/1.4 Georgia, serif;
+}
+
+.field-input.handwriting {
+  font: 21px/1.35 Notebook, cursive;
+}
+
+.syllable-pill {
+  color: var(--red);
+  font-weight: 600;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 18px;
+  gap: 10px;
+}
+
+.btn-primary {
+  background: var(--red);
+  color: #faf5eb;
+  border: 1px solid var(--red);
+  padding: 8px 18px;
+  border-radius: 999px;
+  font: 10px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #6c6658;
+  border: 1px solid rgba(145, 136, 116, 0.45);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font: 10px/1.2 system-ui, -apple-system, sans-serif;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+/* Toast Notification */
+.toast {
+  position: fixed;
+  top: 15px;
+  left: 50%;
+  transform: translate(-50%, -8px);
+  background: rgba(45, 48, 42, 0.92);
+  color: #f8f3e7;
+  padding: 7px 16px;
+  border-radius: 999px;
+  font: 10px/1.3 system-ui, -apple-system, sans-serif;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  z-index: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Responsive Mobile & Compact Height Adjustments */
+@media (max-width: 760px), (max-height: 540px) {
+  .masthead {
+    padding: 10px 4vw 4px;
+  }
+  .brand-sub {
+    display: none;
+  }
+  .tool-pill span.label-text {
+    display: none;
+  }
+  .tool-pill {
+    padding: 6px 9px;
+  }
+  .scene {
+    padding: 6px 10px;
+  }
+  .back-title {
+    font-size: clamp(40px, 11vw, 72px);
+    letter-spacing: -2px;
+    top: 2%;
+  }
+  .book-wrap {
+    width: min(94vw, 600px);
+    touch-action: pan-y;
+  }
+  .book {
+    aspect-ratio: 1.24;
+    transition: translate 0.75s ease, scale 0.75s ease;
+  }
+  .book.closed, .book.closed-end {
+    scale: 1.28;
+  }
+  .book.closed { translate: -32% 0; }
+  .book.closed-end { translate: 32% 0; }
+  .verse {
+    padding: 7% 8%;
+  }
+  .poem {
+    font-size: clamp(13px, 3.8cqi, 23px);
+  }
+  .kigo-badge, .seal-hint {
+    display: none;
+  }
+  .footer-meta > span {
+    display: none;
+  }
+  .footer-meta {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet, .book, .sunlight-dapple {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="sunlight-dapple" aria-hidden="true"></div>
+<canvas id="ambient-canvas" aria-hidden="true"></canvas>
+
+<div class="app-shell">
+  <header class="masthead">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">✳</span>
+      <span>Dr. Akshat Shukla</span>
+      <span class="brand-sub">· Four poems · one small world</span>
+    </div>
+    <div class="toolbar" role="toolbar" aria-label="Sketchbook studio tools">
+      <button class="tool-pill" id="btn-theme" title="Cycle lighting atmosphere (Ivory / Sunlit / Kyoto Dusk)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41"/></svg>
+        <span class="label-text" id="theme-label">Ivory Light</span>
+      </button>
+      <button class="tool-pill" id="btn-loupe" aria-pressed="false" title="Toggle magnifying loupe over watercolor illustrations (Key: L)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+        <span class="label-text">Loupe</span>
+      </button>
+      <button class="tool-pill" id="btn-sound" aria-pressed="true" title="Toggle tactile paper &amp; zen sound effects (Key: M)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        <span class="label-text">Sound</span>
+      </button>
+      <button class="tool-pill" id="btn-riffle" title="Riffle through the sketchbook pages (Key: R)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span class="label-text">Riffle</span>
+      </button>
+      <button class="tool-pill" id="btn-compose" title="Write &amp; add your own Haiku spread to the sketchbook">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        <span class="label-text">Compose</span>
+      </button>
+      <button class="tool-pill" id="btn-postcard" title="Export current spread as a high-res keepsake postcard PNG">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span class="label-text">Postcard</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="scene" aria-label="Interactive haiku sketchbook">
+    <h1 class="back-title" id="back-title">Haiku Sketchbook</h1>
+    <div class="book-wrap closed-shadow" id="book-wrap">
+      <div class="book closed" id="book">
+        <div class="foundation"></div>
+        <div class="spine-hinge" aria-hidden="true"></div>
+        <button class="ribbon-bookmark" id="ribbon-bookmark" aria-label="Bookmark this spread" title="Bookmark this spread"></button>
+        <button class="hit prev" aria-label="Previous spread" tabindex="-1"></button>
+        <button class="hit next" aria-label="Next spread" tabindex="-1"></button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bottom-bar">
+    <nav class="controls-row" aria-label="Turn pages">
+      <button class="arrow" id="prev" aria-label="Previous spread">←</button>
+      <button class="counter-btn" id="counter" title="Open visual spread index">COVER ▾</button>
+      <button class="arrow" id="next" aria-label="Next spread">→</button>
+    </nav>
+    <nav class="dots" id="dots" aria-label="Choose a spread"></nav>
+    <div class="footer-meta">
+      <span>Sketches &amp; verses · Travel Field Journal</span>
+      <p class="hint" id="hint">Click or drag a page to wander · Stamp the red seal · Press L for loupe</p>
+      <span>Pause a little. Notice a little.</span>
+    </div>
+  </footer>
+</div>
+
+<!-- Spread Index Drawer -->
+<aside class="index-drawer" id="index-drawer" aria-label="Sketchbook spread index">
+  <div class="index-header">
+    <span>Sketchbook Spreads &amp; Plates</span>
+    <button class="field-note-close" id="index-close" aria-label="Close spread index">✕</button>
+  </div>
+  <div class="index-grid" id="index-grid"></div>
+</aside>
+
+<!-- Compose Your Own Haiku Modal -->
+<div class="modal-backdrop" id="compose-modal" role="dialog" aria-modal="true" aria-labelledby="compose-title">
+  <div class="modal-card">
+    <div class="modal-eyebrow">Interactive Studio</div>
+    <h2 class="modal-title" id="compose-title">Inscribe a New Haiku Spread</h2>
+    <form id="compose-form" class="form-grid">
+      <div class="form-row">
+        <div>
+          <label class="field-label" for="inp-title"><span>Moment Title</span></label>
+          <input class="field-input" id="inp-title" type="text" placeholder="e.g. Autumn lantern" required>
+        </div>
+        <div>
+          <label class="field-label" for="inp-kigo"><span>Season / Kigo</span></label>
+          <select class="field-input" id="inp-kigo">
+            <option value="SPRING · GARDEN">Spring · Garden</option>
+            <option value="AFTERNOON · SUN">Afternoon · Sun</option>
+            <option value="SUMMER · SKY">Summer · Sky</option>
+            <option value="AUTUMN · MEMORY">Autumn · Memory</option>
+            <option value="WINTER · STILLNESS">Winter · Stillness</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="field-label" for="inp-line1"><span>Line 1 (target ~5 syllables)</span><span class="syllable-pill" id="syl-1">0 syl</span></label>
+        <input class="field-input handwriting" id="inp-line1" type="text" placeholder="morning dewdrop clings" required>
+      </div>
+      <div>
+        <label class="field-label" for="inp-line2"><span>Line 2 (target ~7 syllables)</span><span class="syllable-pill" id="syl-2">0 syl</span></label>
+        <input class="field-input handwriting" id="inp-line2" type="text" placeholder="silent bamboo bends in wind--" required>
+      </div>
+      <div>
+        <label class="field-label" for="inp-line3"><span>Line 3 (target ~5 syllables)</span><span class="syllable-pill" id="syl-3">0 syl</span></label>
+        <input class="field-input handwriting" id="inp-line3" type="text" placeholder="light upon the pond" required>
+      </div>
+      <div class="form-row">
+        <div>
+          <label class="field-label" for="inp-note"><span>Margin Note</span></label>
+          <input class="field-input" id="inp-note" type="text" placeholder="by the quiet water">
+        </div>
+        <div>
+          <label class="field-label" for="inp-art"><span>Companion Watercolor Plate</span></label>
+          <select class="field-input" id="inp-art">
+            <option value="bamboo">Ink Bamboo &amp; Mist (Procedural)</option>
+            <option value="lotus">Pond &amp; Distant Peaks (Procedural)</option>
+            <option value="roses">Crimson Roses &amp; Butterfly</option>
+            <option value="sunlight">Open Book in Sunlight</option>
+            <option value="hawk">Summer Hawk in Flight</option>
+            <option value="tree">Ancient Hollow Tree</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="compose-reset" title="Remove custom spreads">Reset Custom</button>
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="btn-secondary" id="compose-cancel">Cancel</button>
+          <button type="submit" class="btn-primary">Bind Spread into Book</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="sr-only" id="status" aria-live="polite" aria-atomic="true"></div>
+
+<script>
+'use strict';
+
+const cover = '__COVER__';
+const backCover = '__BACK_COVER__';
+const author = 'Dr. Akshat Shukla';
+const authorBio = 'An Educator, Writer. AI Enthusiast';
+
+const basePoems = [
+  {
+    title: 'Poetry in motion',
+    kigo: 'SPRING · GARDEN',
+    plate: 'PLATE I · BOTANICAL STUDY',
+    lines: ['little butterfly', 'poetry in motion--', 'rhyming red roses'],
+    note: 'a little garden moment',
+    fieldNote: 'Fine sepia ink and translucent crimson watercolor washes capture a pale yellow butterfly suspended above blooming garden roses.',
+    alt: 'A pale butterfly hovering over loose crimson watercolor roses.',
+    image: '__ROSES__'
+  },
+  {
+    title: 'Tasting the text',
+    kigo: 'AFTERNOON · STUDY',
+    plate: 'PLATE II · SUNLIT STUDY',
+    lines: ['sunlight bright', 'on page 114 --', 'tasting the text'],
+    note: 'in a patch of sunlight',
+    fieldNote: 'Observed obliquely on a wooden table: warm honey-colored afternoon light and dappled leaf shadows crossing page 114 of an open book.',
+    alt: 'An open book on page 114 bathed in warm sunlight and leaf shadows.',
+    image: '__SUNLIGHT__'
+  },
+  {
+    title: 'Summer silence',
+    kigo: 'HIGH SUMMER · SKY',
+    plate: 'PLATE III · FIELD SKY',
+    lines: ["hawk's flight", 'breaking the summer silence', 'a rare sight'],
+    note: 'beneath the summer sky',
+    fieldNote: 'Graphite feather studies and soft umber washes above pale sage summer hills—generous negative space evokes stillness and altitude.',
+    alt: 'A solitary hawk soaring above distant quiet summer hills.',
+    image: '__HAWK__'
+  },
+  {
+    title: 'An old hollow',
+    kigo: 'AUTUMN · MEMORY',
+    plate: 'PLATE IV · WOODLAND ECHO',
+    lines: ['tree trunk', 'an old hollow--', 'father shouting'],
+    note: 'an echo in the trees',
+    fieldNote: 'Drybrush bark texture and muted sage moss around a weathered hollow, with faint curved graphite echo marks dissolving into warm paper.',
+    alt: 'A weathered tree trunk with a dark hollow and faint echoing pencil marks.',
+    image: '__TREE__'
+  }
+];
+
+// Procedural watercolor SVG plates for user-composed spreads
+function makeProceduralSvg(kind) {
+  if (kind === 'bamboo') {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900"><rect width="600" height="900" fill="#f7f1e3"/><circle cx="430" cy="210" r="58" fill="#e9bba0" opacity="0.55"/><path d="M80 650 Q240 560 600 610 L600 900 L0 900 L0 670 Z" fill="#cfd6c4" opacity="0.55"/><g stroke="#4a5244" stroke-linecap="round" fill="none"><path d="M185 860 Q195 540 215 140" stroke-width="6" opacity="0.75"/><path d="M245 870 Q235 580 265 220" stroke-width="4" opacity="0.6"/><path d="M215 310 Q275 280 325 315" stroke-width="2.5"/><path d="M196 470 Q135 435 95 465" stroke-width="2.5"/></g><g fill="#5b6653" opacity="0.68"><path d="M320 315 Q365 295 395 330 Q350 335 320 315Z"/><path d="M315 322 Q355 340 375 375 Q335 358 315 322Z"/><path d="M100 462 Q60 445 35 480 Q75 485 100 462Z"/></g></svg>`;
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+  }
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900"><rect width="600" height="900" fill="#f7f1e3"/><circle cx="180" cy="230" r="52" fill="#eabfa2" opacity="0.55"/><path d="M0 490 Q160 410 340 470 T600 440 L600 900 L0 900 Z" fill="#c5d0c0" opacity="0.5"/><path d="M0 610 Q230 560 600 620 L600 900 L0 900 Z" fill="#9fb2b8" opacity="0.42"/><g stroke="#4e4637" stroke-width="2" fill="none" opacity="0.7"><path d="M120 740 h140"/><path d="M290 690 h180"/><path d="M190 790 h210"/></g></svg>`;
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+const artMap = {
+  roses: basePoems[0].image,
+  sunlight: basePoems[1].image,
+  hawk: basePoems[2].image,
+  tree: basePoems[3].image,
+  bamboo: makeProceduralSvg('bamboo'),
+  lotus: makeProceduralSvg('lotus')
+};
+
+// Load custom poems from localStorage if any
+let customPoems = [];
+try {
+  const saved = JSON.parse(localStorage.getItem('haiku_custom_poems') || '[]');
+  if (Array.isArray(saved)) {
+    customPoems = saved.map((p, idx) => ({
+      ...p,
+      image: artMap[p.artKey] || artMap.bamboo,
+      plate: `PLATE ${['V','VI','VII','VIII'][idx] || (idx + 5)} · STUDIO INSCRIPTION`
+    }));
+  }
+} catch (_) {}
+
+let poems = [...basePoems, ...customPoems];
+
+// Hanko seal SVG with inner fill layer for interactive stamping
+const sealSvg = `<svg class="seal" aria-hidden="true" viewBox="0 0 40 44"><path class="seal-fill" d="M4 3L36 4 35 40 3 39Z" fill="transparent" stroke="currentColor" stroke-width="2.4"/><g stroke="currentColor" stroke-width="2" fill="none"><path d="M10 10L10 31M7 18L17 17M7 26L16 25M23 10L31 11 30 20 22 19ZM21 25L31 33 20 33Z"/></g><path d="M3 15L5 17M35 28L37 30M14 40L17 38" stroke="var(--paper)" stroke-width="2"/></svg>`;
+
+// Synthesized Web Audio API Sound Engine (Paper Rustle & Hanko Stamp)
+let audioCtx = null;
+let soundEnabled = true;
+
+function ensureAudio() {
+  if (!soundEnabled) return null;
+  if (!audioCtx) {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (Ctx) audioCtx = new Ctx();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+  return audioCtx;
+}
+
+function playPageFlipSound() {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  try {
+    const dur = 0.22;
+    const bufferSize = ctx.sampleRate * dur;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      const env = Math.sin((i / bufferSize) * Math.PI);
+      data[i] = (Math.random() * 2 - 1) * env * 0.14;
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1100, ctx.currentTime);
+    filter.Q.setValueAtTime(1.8, ctx.currentTime);
+    noise.connect(filter);
+    filter.connect(ctx.destination);
+    noise.start();
+  } catch (_) {}
+}
+
+function playStampSound() {
+  const ctx = ensureAudio();
+  if (!ctx) return;
+  try {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(145, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(52, ctx.currentTime + 0.11);
+    gain.gain.setValueAtTime(0.22, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.12);
+  } catch (_) {}
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined) n.textContent = text;
+  return n;
+}
+
+// Persistent state for stamped seals & bookmarked spreads
+const stampedSpreads = new Set();
+const bookmarkedSpreads = new Set([1]);
+let loupeEnabled = false;
+
+function closingCover() {
+  const face = el('div', 'face back cover');
+  const image = el('img', 'art');
+  image.src = backCover;
+  image.alt = 'Soft watercolor reeds and a quiet lake on the back cover';
+  image.draggable = false;
+  const copy = el('div', 'back-cover-copy');
+  copy.append(
+    el('h2', 'back-cover-name', author),
+    el('p', 'back-cover-bio', authorBio)
+  );
+  copy.insertAdjacentHTML('beforeend', sealSvg);
+  face.append(image, copy);
+  return face;
+}
+
+function illustration(p, i) {
+  const face = el('div', 'face back');
+  const frame = el('div', 'art-frame');
+  const img = el('img', 'art');
+  img.src = p.image;
+  img.alt = p.alt || p.title;
+  img.draggable = false;
+
+  // Interactive Magnifying Loupe Lens
+  const lens = el('div', 'loupe-lens');
+  lens.style.backgroundImage = `url("${p.image}")`;
+  lens.style.backgroundSize = '240% 240%';
+
+  frame.addEventListener('mousemove', (e) => {
+    if (!loupeEnabled) return;
+    const rect = frame.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const xp = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    const yp = Math.max(0, Math.min(100, (y / rect.height) * 100));
+    lens.style.left = `${x}px`;
+    lens.style.top = `${y}px`;
+    lens.style.backgroundPosition = `${xp}% ${yp}%`;
+    lens.classList.add('visible');
+  });
+  frame.addEventListener('mouseleave', () => lens.classList.remove('visible'));
+
+  const plateBar = el('div', 'plate-bar');
+  plateBar.append(
+    el('span', 'plate-caption', p.plate || `PLATE ${i + 1}`),
+    el('span', 'folio', String(i * 2 + 1).padStart(2, '0'))
+  );
+
+  frame.append(img, lens, plateBar);
+  face.append(frame, el('div', 'paper-grain'));
+  return face;
+}
+
+function verse(p, i) {
+  const face = el('div', 'face front');
+  const v = el('div', 'verse');
+
+  const header = el('div', 'verse-header');
+  header.append(
+    el('div', 'eyebrow', `MOMENT ${String(i + 1).padStart(2, '0')}`),
+    el('span', 'kigo-badge', p.kigo || 'SEASON · VERSE')
+  );
+  v.append(header);
+
+  const poem = el('p', 'poem');
+  p.lines.forEach((line) => poem.append(el('span', '', line)));
+  v.append(poem);
+
+  // Interactive Hanko Seal Button
+  const sealRow = el('div', 'seal-row');
+  const sBtn = el('button', 'seal-btn' + (stampedSpreads.has(i + 1) ? ' stamped' : ''));
+  sBtn.type = 'button';
+  sBtn.setAttribute('aria-label', 'Stamp red artist hanko seal on this haiku');
+  sBtn.title = 'Click to press artist hanko seal';
+  sBtn.innerHTML = sealSvg;
+  const sHint = el('span', 'seal-hint', stampedSpreads.has(i + 1) ? 'Seal Impressed' : 'Press Seal');
+
+  sBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sBtn.classList.add('stamping');
+    setTimeout(() => sBtn.classList.remove('stamping'), 180);
+    if (stampedSpreads.has(i + 1)) {
+      stampedSpreads.delete(i + 1);
+      sBtn.classList.remove('stamped');
+      sHint.textContent = 'Press Seal';
+    } else {
+      stampedSpreads.add(i + 1);
+      sBtn.classList.add('stamped');
+      sHint.textContent = 'Seal Impressed · 朱印';
+      playStampSound();
+      showToast(`Stamped "${p.title}" with vermilion seal`);
+    }
+  });
+
+  sealRow.append(sBtn, sHint);
+  v.append(sealRow);
+  v.append(el('span', 'annotation', p.note));
+
+  // Expandable Field Notes & Medium Reflection
+  const fnBtn = el('button', 'field-note-toggle', 'Field Notes & Medium · +');
+  fnBtn.type = 'button';
+  const fnCard = el('div', 'field-note-card');
+  const fnClose = el('button', 'field-note-close', '✕');
+  fnClose.type = 'button';
+  fnClose.setAttribute('aria-label', 'Close field notes');
+  const fnTitle = el('strong', '', `${p.title} — Studio Observation`);
+  const fnBody = el('span', '', p.fieldNote || 'Hand-drawn sepia ink and watercolor study on warm cotton paper.');
+  fnCard.append(fnClose, fnTitle, fnBody);
+
+  fnBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = fnCard.classList.toggle('open');
+    fnBtn.textContent = open ? 'Field Notes & Medium · −' : 'Field Notes & Medium · +';
+  });
+  fnClose.addEventListener('click', (e) => {
+    e.stopPropagation();
+    fnCard.classList.remove('open');
+    fnBtn.textContent = 'Field Notes & Medium · +';
+  });
+
+  v.append(fnBtn, fnCard);
+  face.append(v, el('div', 'paper-grain'), el('span', 'folio folio-right', String(i * 2 + 2).padStart(2, '0')));
+  return face;
+}
+
+const book = document.getElementById('book');
+const bookWrap = document.getElementById('book-wrap');
+const dots = document.getElementById('dots');
+const indexGrid = document.getElementById('index-grid');
+const ribbonBtn = document.getElementById('ribbon-bookmark');
+let sheets = [];
+let buttons = [];
+let indexCards = [];
+let lastPosition = poems.length + 1;
+let current = 0;
+let riffleTimers = [];
+let generation = 0;
+let userInteracted = false;
+
+function buildBookDOM() {
+  sheets.forEach((s) => s.remove());
+  sheets = [];
+  dots.innerHTML = '';
+  indexGrid.innerHTML = '';
+  buttons = [];
+  indexCards = [];
+  lastPosition = poems.length + 1;
+
+  for (let i = 0; i <= poems.length; i++) {
+    const sheet = el('div', 'sheet');
+    sheet.setAttribute('aria-hidden', 'true');
+    if (i === 0) {
+      const f = el('div', 'face front cover');
+      const image = el('img', 'art');
+      image.src = cover;
+      image.alt = `Haiku Sketchbook by ${author} — watercolor mountains, lake and reeds`;
+      f.append(image);
+      sheet.append(f);
+    } else {
+      sheet.append(verse(poems[i - 1], i - 1));
+    }
+    if (i < poems.length) {
+      sheet.append(illustration(poems[i], i));
+    } else {
+      sheet.append(closingCover());
+    }
+    book.append(sheet);
+    sheets.push(sheet);
+  }
+
+  for (let i = 0; i <= lastPosition; i++) {
+    const b = el('button', 'dot' + (bookmarkedSpreads.has(i) ? ' bookmarked' : ''));
+    b.setAttribute('aria-label', i === 0 ? 'View cover' : i === lastPosition ? 'View back cover' : `View haiku ${i}: ${poems[i - 1].title}`);
+    b.addEventListener('click', () => navigate(i));
+    dots.append(b);
+    buttons.push(b);
+
+    // Populate Spread Index Drawer Card
+    const card = el('button', 'index-card');
+    card.type = 'button';
+    const thumb = el('img', 'index-thumb');
+    thumb.src = i === 0 ? cover : i === lastPosition ? backCover : poems[i - 1].image;
+    thumb.alt = '';
+    const cTitle = el('span', 'index-card-title', i === 0 ? 'Front Cover' : i === lastPosition ? 'Back Cover' : poems[i - 1].title);
+    const cSub = el('span', 'index-card-sub', i === 0 ? 'Opening Plate' : i === lastPosition ? 'Author Bio' : `Moment ${String(i).padStart(2, '0')}`);
+    card.append(thumb, cTitle, cSub);
+    card.addEventListener('click', () => {
+      document.getElementById('index-drawer').classList.remove('open');
+      navigate(i);
+    });
+    indexGrid.append(card);
+    indexCards.push(card);
+  }
+}
+
+buildBookDOM();
+
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+const counter = document.getElementById('counter');
+const status = document.getElementById('status');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+const desktop = matchMedia('(min-width:761px) and (min-height:541px)');
+
+function stopRiffle() {
+  riffleTimers.forEach(clearTimeout);
+  riffleTimers = [];
+  book.classList.remove('riffle');
+}
+
+function clearPeeks() {
+  sheets.forEach((s) => s.classList.remove('peek-next', 'peek-prev'));
+}
+
+function navigate(target, automatic = false) {
+  if (!automatic) {
+    userInteracted = true;
+    stopRiffle();
+  }
+  clearPeeks();
+  const old = current;
+  current = Math.max(0, Math.min(lastPosition, target));
+  if (current !== old && !automatic) {
+    playPageFlipSound();
+  }
+  generation++;
+  const epoch = generation;
+
+  sheets.forEach((s, i) => {
+    const turned = i < current;
+    const moving = (i < old) !== turned;
+    s.style.zIndex = moving
+      ? String(100 + (current > old ? i : -i))
+      : String(turned ? i + 1 : sheets.length - i);
+    s.classList.toggle('turned', turned);
+  });
+
+  const isClosed = current === 0 || current === lastPosition;
+  book.classList.toggle('closed', current === 0);
+  book.classList.toggle('closed-end', current === lastPosition);
+  bookWrap.classList.toggle('closed-shadow', isClosed);
+  ribbonBtn.classList.toggle('is-bookmarked', bookmarkedSpreads.has(current));
+
+  prev.disabled = current === 0;
+  next.disabled = current === lastPosition;
+  counter.textContent = current === 0
+    ? 'COVER ▾'
+    : current === lastPosition
+      ? 'BACK COVER ▾'
+      : `${String(current).padStart(2, '0')} / ${String(poems.length).padStart(2, '0')} ▾`;
+
+  buttons.forEach((b, i) => {
+    b.setAttribute('aria-current', String(i === current));
+    b.classList.toggle('bookmarked', bookmarkedSpreads.has(i));
+  });
+  indexCards.forEach((c, i) => c.setAttribute('aria-current', String(i === current)));
+
+  const nextLabel = current === poems.length ? 'Close book' : 'Next spread';
+  next.setAttribute('aria-label', nextLabel);
+  book.querySelector('.next').setAttribute('aria-label', nextLabel);
+  prev.setAttribute('aria-label', current === lastPosition ? 'Reopen book' : 'Previous spread');
+  book.querySelector('.prev').setAttribute('aria-label', current === lastPosition ? 'Reopen book' : 'Previous spread');
+
+  status.textContent = current === 0
+    ? `Cover: Haiku Sketchbook by ${author}`
+    : current === lastPosition
+      ? `Book closed. ${author}. ${authorBio}`
+      : `Haiku ${current} of ${poems.length}. ${poems[current - 1].lines.join('. ')}`;
+
+  setTimeout(() => {
+    if (epoch !== generation) return;
+    sheets.forEach((s, i) => {
+      s.style.zIndex = String(i < current ? i + 1 : sheets.length - i);
+    });
+  }, book.classList.contains('riffle') ? 260 : 880);
+}
+
+// Page-edge hover curl preview
+const hitPrev = book.querySelector('.prev');
+const hitNext = book.querySelector('.next');
+
+hitNext.addEventListener('mouseenter', () => {
+  if (current < lastPosition && sheets[current]) {
+    sheets[current].classList.add('peek-next');
+  }
+});
+hitNext.addEventListener('mouseleave', clearPeeks);
+
+hitPrev.addEventListener('mouseenter', () => {
+  if (current > 0 && sheets[current - 1]) {
+    sheets[current - 1].classList.add('peek-prev');
+  }
+});
+hitPrev.addEventListener('mouseleave', clearPeeks);
+
+prev.addEventListener('click', () => navigate(current - 1));
+next.addEventListener('click', () => navigate(current + 1));
+hitPrev.addEventListener('click', () => navigate(current - 1));
+hitNext.addEventListener('click', () => navigate(current + 1));
+
+// Subtle 3D tilt parallax on desktop mouse move
+document.addEventListener('mousemove', (e) => {
+  if (!desktop.matches || reduced.matches) return;
+  const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+  const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+  bookWrap.style.transform = `rotateY(${(nx * 2.2).toFixed(2)}deg) rotateX(${(-ny * 1.6).toFixed(2)}deg)`;
+  const backTitle = document.getElementById('back-title');
+  backTitle.style.transform = `translate3d(${(-nx * 10).toFixed(1)}px, ${(-ny * 6).toFixed(1)}px, 0)`;
+});
+
+// Ribbon Bookmark Toggle
+ribbonBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (current === 0 || current === lastPosition) return;
+  if (bookmarkedSpreads.has(current)) {
+    bookmarkedSpreads.delete(current);
+    showToast(`Removed bookmark from Moment ${String(current).padStart(2, '0')}`);
+  } else {
+    bookmarkedSpreads.add(current);
+    showToast(`Bookmarked Moment ${String(current).padStart(2, '0')}: "${poems[current - 1].title}"`);
+  }
+  ribbonBtn.classList.toggle('is-bookmarked', bookmarkedSpreads.has(current));
+  buttons.forEach((b, i) => b.classList.toggle('bookmarked', bookmarkedSpreads.has(i)));
+});
+
+// Riffle Animation
+function playRiffle() {
+  if (reduced.matches) {
+    navigate(1);
+    return;
+  }
+  stopRiffle();
+  book.classList.add('riffle');
+  const sequence = [0, 1, 2, 3, 4, 1];
+  sequence.forEach((pos, idx) => {
+    riffleTimers.push(setTimeout(() => {
+      playPageFlipSound();
+      navigate(pos, true);
+      if (idx === sequence.length - 1) {
+        setTimeout(() => book.classList.remove('riffle'), 280);
+      }
+    }, idx * 210));
+  });
+}
+
+document.getElementById('btn-riffle').addEventListener('click', playRiffle);
+
+// Lighting Atmosphere Cycling
+const themes = [
+  { id: 'ivory', label: 'Ivory Light', msg: 'Studio Ivory Daylight' },
+  { id: 'sunlit', label: 'Golden Hour', msg: 'Afternoon Sun & Leaf Shadows' },
+  { id: 'dusk', label: 'Kyoto Dusk', msg: 'Evening Lantern Atmosphere' }
+];
+let themeIdx = 0;
+document.getElementById('btn-theme').addEventListener('click', () => {
+  themeIdx = (themeIdx + 1) % themes.length;
+  const t = themes[themeIdx];
+  document.documentElement.setAttribute('data-theme', t.id);
+  document.getElementById('theme-label').textContent = t.label;
+  showToast(t.msg);
+});
+
+// Loupe Magnifier Toggle
+const btnLoupe = document.getElementById('btn-loupe');
+function toggleLoupe() {
+  loupeEnabled = !loupeEnabled;
+  btnLoupe.setAttribute('aria-pressed', String(loupeEnabled));
+  document.body.classList.toggle('loupe-active', loupeEnabled);
+  if (loupeEnabled && current === 0) navigate(1);
+  showToast(loupeEnabled ? 'Magnifying Loupe Active — Hover over left artwork' : 'Magnifying Loupe Off');
+}
+btnLoupe.addEventListener('click', toggleLoupe);
+
+// Sound Toggle
+const btnSound = document.getElementById('btn-sound');
+btnSound.addEventListener('click', () => {
+  soundEnabled = !soundEnabled;
+  btnSound.setAttribute('aria-pressed', String(soundEnabled));
+  showToast(soundEnabled ? 'Tactile Paper & Seal Audio On' : 'Audio Muted');
+});
+
+// Spread Index Drawer Toggle
+const indexDrawer = document.getElementById('index-drawer');
+counter.addEventListener('click', () => {
+  indexDrawer.classList.toggle('open');
+});
+document.getElementById('index-close').addEventListener('click', () => {
+  indexDrawer.classList.remove('open');
+});
+
+// Compose Modal & Live Syllable Estimator
+const composeModal = document.getElementById('compose-modal');
+document.getElementById('btn-compose').addEventListener('click', () => {
+  composeModal.classList.add('open');
+});
+document.getElementById('compose-cancel').addEventListener('click', () => {
+  composeModal.classList.remove('open');
+});
+
+function countSyllables(text) {
+  const clean = text.toLowerCase().replace(/[^a-z\s]/g, '').trim();
+  if (!clean) return 0;
+  return clean.split(/\s+/).reduce((sum, word) => {
+    if (word.length <= 3) return sum + 1;
+    const w = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '').replace(/^y/, '');
+    const m = w.match(/[aeiouy]{1,2}/g);
+    return sum + (m ? m.length : 1);
+  }, 0);
+}
+
+['1', '2', '3'].forEach((n) => {
+  const inp = document.getElementById(`inp-line${n}`);
+  const badge = document.getElementById(`syl-${n}`);
+  inp.addEventListener('input', () => {
+    const c = countSyllables(inp.value);
+    badge.textContent = `${c} syl`;
+  });
+});
+
+document.getElementById('compose-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const title = document.getElementById('inp-title').value.trim() || 'Untitled Moment';
+  const kigo = document.getElementById('inp-kigo').value;
+  const l1 = document.getElementById('inp-line1').value.trim();
+  const l2 = document.getElementById('inp-line2').value.trim();
+  const l3 = document.getElementById('inp-line3').value.trim();
+  const note = document.getElementById('inp-note').value.trim() || 'a quiet observation';
+  const artKey = document.getElementById('inp-art').value;
+
+  const newEntry = {
+    title,
+    kigo,
+    lines: [l1, l2, l3],
+    note,
+    artKey,
+    fieldNote: `Custom verse inscribed by the reader, paired with ${artKey} study on warm cotton paper.`,
+    alt: `Watercolor study for ${title}`
+  };
+
+  customPoems.push({
+    ...newEntry,
+    image: artMap[artKey] || artMap.bamboo,
+    plate: `PLATE ${poems.length + 1} · STUDIO INSCRIPTION`
+  });
+  try {
+    localStorage.setItem('haiku_custom_poems', JSON.stringify(customPoems));
+  } catch (_) {}
+
+  poems = [...basePoems, ...customPoems];
+  buildBookDOM();
+  composeModal.classList.remove('open');
+  e.target.reset();
+  navigate(poems.length);
+  showToast(`Bound "${title}" as Moment ${String(poems.length).padStart(2, '0')}`);
+});
+
+document.getElementById('compose-reset').addEventListener('click', () => {
+  customPoems = [];
+  try { localStorage.removeItem('haiku_custom_poems'); } catch (_) {}
+  poems = [...basePoems];
+  buildBookDOM();
+  composeModal.classList.remove('open');
+  navigate(1);
+  showToast('Restored original four haiku spreads');
+});
+
+// Export Active Spread as High-Res Keepsake Postcard PNG
+document.getElementById('btn-postcard').addEventListener('click', async () => {
+  const spreadIdx = (current >= 1 && current <= poems.length) ? current - 1 : 0;
+  const p = poems[spreadIdx];
+  const canvas = document.createElement('canvas');
+  canvas.width = 1600;
+  canvas.height = 1060;
+  const ctx = canvas.getContext('2d');
+
+  // Warm archival paper background
+  ctx.fillStyle = '#f6f0e2';
+  ctx.fillRect(0, 0, 1600, 1060);
+
+  // Outer deckled frame border
+  ctx.strokeStyle = '#d5cbb6';
+  ctx.lineWidth = 3;
+  ctx.strokeRect(28, 28, 1544, 1004);
+
+  // Center spine shadow
+  const grad = ctx.createLinearGradient(775, 0, 825, 0);
+  grad.addColorStop(0, 'rgba(90,78,52,0)');
+  grad.addColorStop(0.5, 'rgba(70,58,36,0.18)');
+  grad.addColorStop(1, 'rgba(90,78,52,0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(775, 28, 50, 1004);
+
+  // Draw left page illustration
+  try {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    await new Promise((res, rej) => {
+      img.onload = res;
+      img.onerror = rej;
+      img.src = p.image;
+    });
+    ctx.drawImage(img, 56, 56, 700, 948);
+  } catch (_) {}
+
+  // Right page typography
+  ctx.fillStyle = '#8e8572';
+  ctx.font = '600 15px system-ui, sans-serif';
+  ctx.fillText(`MOMENT ${String(spreadIdx + 1).padStart(2, '0')}   ·   ${p.kigo || 'HAIKU SKETCHBOOK'}`, 890, 250);
+
+  ctx.fillStyle = '#383b32';
+  ctx.font = '54px Notebook, cursive';
+  p.lines.forEach((line, idx) => {
+    ctx.fillText(line, 890 + (idx === 1 ? 10 : 0), 390 + idx * 86);
+  });
+
+  // Red Hanko seal box
+  ctx.strokeStyle = '#ab4533';
+  ctx.lineWidth = 3.5;
+  ctx.strokeRect(890, 680, 52, 56);
+  ctx.fillStyle = '#ab4533';
+  ctx.font = 'bold 20px Georgia, serif';
+  ctx.fillText('詩', 905, 716);
+
+  ctx.fillStyle = '#8f8773';
+  ctx.font = '28px Notebook, cursive';
+  ctx.fillText(p.note, 890, 790);
+
+  ctx.fillStyle = '#9a927f';
+  ctx.font = '14px system-ui, sans-serif';
+  ctx.fillText(`HAIKU SKETCHBOOK · ${author.toUpperCase()}`, 890, 960);
+
+  const link = document.createElement('a');
+  link.download = `haiku-sketchbook-moment-${spreadIdx + 1}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  showToast(`Saved Moment ${String(spreadIdx + 1).padStart(2, '0')} Keepsake Postcard`);
+});
+
+// Keyboard Shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.altKey || e.ctrlKey || e.metaKey || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+  if (e.key === 'Escape') {
+    indexDrawer.classList.remove('open');
+    composeModal.classList.remove('open');
+    return;
+  }
+  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+    e.preventDefault();
+    navigate(current + (e.key === 'ArrowRight' ? 1 : -1));
+  }
+  if (e.key === 'Home') { e.preventDefault(); navigate(0); }
+  if (e.key === 'End') { e.preventDefault(); navigate(lastPosition); }
+  if (e.key === 'l' || e.key === 'L') { e.preventDefault(); toggleLoupe(); }
+  if (e.key === 'r' || e.key === 'R') { e.preventDefault(); playRiffle(); }
+  if (e.key === 'i' || e.key === 'I') { e.preventDefault(); indexDrawer.classList.toggle('open'); }
+});
+
+// Touch & Mouse Drag-to-Turn Gestures
+let pointerStart = null;
+let suppressClick = false;
+
+book.addEventListener('pointerdown', (e) => {
+  if (e.target.closest('.seal-btn, .field-note-toggle, .field-note-card, .ribbon-bookmark')) return;
+  pointerStart = { x: e.clientX, y: e.clientY };
+}, { passive: true });
+
+book.addEventListener('pointerup', (e) => {
+  if (!pointerStart) return;
+  const dx = e.clientX - pointerStart.x;
+  const dy = e.clientY - pointerStart.y;
+  pointerStart = null;
+  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.35) {
+    suppressClick = true;
+    navigate(current + (dx < 0 ? 1 : -1));
+    setTimeout(() => { suppressClick = false; }, 360);
+  }
+}, { passive: true });
+
+book.addEventListener('click', (e) => {
+  if (suppressClick) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+  }
+}, true);
+
+// Ambient Floating Botanical Dust Motes / Petals
+const ambCanvas = document.getElementById('ambient-canvas');
+const ambCtx = ambCanvas.getContext('2d');
+let motes = [];
+
+function resizeAmbient() {
+  ambCanvas.width = window.innerWidth;
+  ambCanvas.height = window.innerHeight;
+}
+resizeAmbient();
+window.addEventListener('resize', resizeAmbient);
+
+for (let i = 0; i < 22; i++) {
+  motes.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: 1.2 + Math.random() * 2.4,
+    vx: -0.15 + Math.random() * 0.35,
+    vy: 0.12 + Math.random() * 0.28,
+    alpha: 0.12 + Math.random() * 0.25
+  });
+}
+
+function tickAmbient() {
+  if (!reduced.matches) {
+    ambCtx.clearRect(0, 0, ambCanvas.width, ambCanvas.height);
+    const isDusk = document.documentElement.getAttribute('data-theme') === 'dusk';
+    motes.forEach((m) => {
+      m.x += m.vx;
+      m.y += m.vy;
+      if (m.y > ambCanvas.height + 10) m.y = -10;
+      if (m.x > ambCanvas.width + 10) m.x = -10;
+      if (m.x < -10) m.x = ambCanvas.width + 10;
+      ambCtx.beginPath();
+      ambCtx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
+      ambCtx.fillStyle = isDusk
+        ? `rgba(245, 212, 148, ${m.alpha})`
+        : `rgba(172, 132, 96, ${m.alpha})`;
+      ambCtx.fill();
+    });
+  }
+  requestAnimationFrame(tickAmbient);
+}
+requestAnimationFrame(tickAmbient);
+
+function start() {
+  if (!userInteracted) navigate(0, true);
+}
+
+function updateHint() {
+  document.getElementById('hint').textContent = desktop.matches
+    ? 'Click or drag a page to wander · Stamp the red seal · Press L for loupe'
+    : 'Tap or swipe pages · Tap the red seal to stamp';
+}
+desktop.addEventListener('change', () => { stopRiffle(); updateHint(); });
+updateHint();
+reduced.addEventListener('change', stopRiffle);
+navigate(0, true);
+
+Promise.all([...book.querySelectorAll('img')].map((img) => img.decode().catch(() => {}))).then(start);
+</script>
+</body>
+</html>
